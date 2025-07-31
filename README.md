@@ -42,24 +42,7 @@ bot.run_forever()
 Установить новейшую версию можно командой:
 
 ```console
-pip install vkbottle
+pip install git+https://github.com/lutikk/vkbottle.git
 ```
 
-Если вы ищете старые версии:
 
-- [`3.x`](https://github.com/vkbottle/vkbottle/tree/v3.0)
-- [`2.x`](https://github.com/vkbottle/vkbottle/tree/v2.0)
-
-## Contributing
-
-ПР поддерживаются! Перед созданием пулл реквеста ознакомьтесь с [CONTRIBUTION_GUIDE](CONTRIBUTION_GUIDE.md). Нам приятно видеть ваш вклад в развитие фреймворка.\
-Задавайте вопросы в блоке Issues или на нашем [**форуме в Telegram**](https://t.me/botoforum)!
-
-Мейнтейнеры: [click](https://github.com/vkbottle/vkbottle/graphs/contributors)
-
-## Лицензия
-
-Copyright © 2019 [timoniq](https://github.com/timoniq).\
-Copyright © 2022-2024 [FeeeeK](https://github.com/FeeeeK).\
-Copyright © 2024 [luwqz1](https://github.com/luwqz1).\
-Этот проект имеет [MIT](https://github.com/vkbottle/vkbottle/blob/master/LICENSE) лицензию.

@@ -26,11 +26,12 @@ class AiohttpClient(ABCHTTPClient):
         session: Optional[ClientSession] = None,
         json_processing_module: Optional[JSONModule] = None,
         optimize: bool = False,
+        proxy: Optional[str] = None,
         **session_params: Unpack[AiohttpSessionKwargs],
     ) -> None:
         json_serialize = session_params.pop("json_serialize", None)
         self.json_processing_module = json_processing_module or json_serialize or json_module
-
+        self.proxy = proxy
         if optimize:
             session_params["skip_auto_headers"] = {"User-Agent"}
             session_params["raise_for_status"] = True
@@ -45,12 +46,18 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> ClientResponse:
+        if self.proxy:
+            kwargs["proxy"] = self.proxy
+
+
+
         if not self.session:
             self.session = ClientSession(  # type: ignore[misc]
                 json_serialize=self.json_processing_module.dumps,
                 **self._session_params,  # type: ignore[arg-type]
             )
-        async with self.session.request(url=url, method=method, data=data, **kwargs) as response:
+
+        async with self.session.request(url=url, method=method,ssl=False, data=data, **kwargs) as response:
             await response.read()
             return response
 
@@ -61,6 +68,7 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> dict:
+
         response = await self.request_raw(url, method, data, **kwargs)
         return await response.json(
             encoding="UTF-8",
@@ -75,6 +83,7 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> str:
+
         response = await self.request_raw(url, method, data, **kwargs)
         return await response.text(encoding="UTF-8")
 
@@ -85,6 +94,7 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> bytes:
+
         response = await self.request_raw(url, method, data, **kwargs)
         assert response._body is not None  # noqa: S101
         return response._body
