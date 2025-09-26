@@ -26,6 +26,7 @@ class AiohttpClient(ABCHTTPClient):
         session: Optional[ClientSession] = None,
         json_processing_module: Optional[JSONModule] = None,
         optimize: bool = False,
+        proxy: Optional[str] = None,
         **session_params: Unpack[AiohttpSessionKwargs],
     ) -> None:
         json_serialize = session_params.pop("json_serialize", None)
@@ -45,12 +46,18 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> ClientResponse:
+        if self.proxy:
+            kwargs["proxy"] = self.proxy
+
+
+
         if not self.session:
             self.session = ClientSession(  # type: ignore[misc]
                 json_serialize=self.json_processing_module.dumps,
                 **self._session_params,  # type: ignore[arg-type]
             )
-        async with self.session.request(url=url, method=method, data=data, **kwargs) as response:
+
+        async with self.session.request(url=url, method=method, ssl=False, data=data, **kwargs) as response:
             await response.read()
             return response
 

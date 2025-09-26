@@ -42,7 +42,7 @@ bot.run_forever()
 Установить новейшую версию можно командой:
 
 ```console
-pip install vkbottle
+pip install -U https://github.com/lutikk/vkbottle/archive/master.zip
 ```
 
 Если вы ищете старые версии:
