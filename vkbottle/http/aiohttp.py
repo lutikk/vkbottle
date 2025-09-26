@@ -31,7 +31,7 @@ class AiohttpClient(ABCHTTPClient):
     ) -> None:
         json_serialize = session_params.pop("json_serialize", None)
         self.json_processing_module = json_processing_module or json_serialize or json_module
-
+        self.proxy = proxy
         if optimize:
             session_params["skip_auto_headers"] = {"User-Agent"}
             session_params["raise_for_status"] = True
@@ -57,7 +57,7 @@ class AiohttpClient(ABCHTTPClient):
                 **self._session_params,  # type: ignore[arg-type]
             )
 
-        async with self.session.request(url=url, method=method, ssl=False, data=data, **kwargs) as response:
+        async with self.session.request(url=url, method=method,ssl=False, data=data, **kwargs) as response:
             await response.read()
             return response
 
@@ -68,6 +68,7 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> dict:
+
         response = await self.request_raw(url, method, data, **kwargs)
         return await response.json(
             encoding="UTF-8",
@@ -82,6 +83,7 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> str:
+
         response = await self.request_raw(url, method, data, **kwargs)
         return await response.text(encoding="UTF-8")
 
@@ -92,6 +94,7 @@ class AiohttpClient(ABCHTTPClient):
         data: Optional[dict] = None,
         **kwargs: Unpack[AiohttpRequestKwargs],
     ) -> bytes:
+
         response = await self.request_raw(url, method, data, **kwargs)
         assert response._body is not None  # noqa: S101
         return response._body
