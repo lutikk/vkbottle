@@ -45,7 +45,7 @@ class VKAPIErrorResponseValidator(ABCResponseValidator):
             key = await ctx_api.captcha_handler(CaptchaError(**error))  # type: ignore
             return await ctx_api.request(
                 method,
-                data={**data, 'success_token': key},
+                data={**data, 'success_token': key}
             )
 
         raise VKAPIError[code](**error)

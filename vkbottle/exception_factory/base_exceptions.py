@@ -30,7 +30,6 @@ class VKAPIError(CodeException, ReducibleKwargsException):
 
 
 class CaptchaError(VKAPIError, code=14):
-    "Дописать капчу когда прийдет время"
     def __init__(
         self,
         *,
