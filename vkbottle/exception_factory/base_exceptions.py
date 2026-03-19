@@ -33,10 +33,11 @@ class CaptchaError(VKAPIError, code=14):
     def __init__(
         self,
         *,
-        captcha_sid: str,
-        captcha_img: str,
+        captcha_sid: Optional[str] = None,
+        captcha_img: Optional[str] = None,
         captcha_ts: Optional[str] = None,
         captcha_attempt: Optional[int] = None,
+        redirect_uri: Optional[str] = None,
         **kwargs: Any,
     ):
         super().__init__(**kwargs)
@@ -44,6 +45,7 @@ class CaptchaError(VKAPIError, code=14):
         self.captcha_img = captcha_img
         self.captcha_ts = captcha_ts
         self.captcha_attempt = captcha_attempt
+        self.redirect_uri = redirect_uri
 
 
 class APIAuthError(VKAPIError, code=5):

@@ -49,6 +49,7 @@ class AiohttpClient(ABCHTTPClient):
     ) -> ClientResponse:
         if self.proxy:
             kwargs["proxy"] = self.proxy
+            kwargs.setdefault("ssl", False)
         if not self.session:
             self.session = ClientSession(  # type: ignore[misc]
                 json_serialize=self.json_processing_module.dumps,
