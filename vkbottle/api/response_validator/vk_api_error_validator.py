@@ -42,13 +42,20 @@ class VKAPIErrorResponseValidator(ABCResponseValidator):
         code = error.pop("error_code")
 
         if VKAPIError[code] is CaptchaError and ctx_api.captcha_handler is not None:
-            result = await ctx_api.captcha_handler(CaptchaError(**error))  # type: ignore
+            captcha_error = CaptchaError(**error)
+            result = await ctx_api.captcha_handler(captcha_error)  # type: ignore
+
+            if result is None:
+                logger.warning("Captcha handler returned None, re-raising error")
+                raise captcha_error
+
             if isinstance(result, dict):
                 captcha_data = result
             else:
                 captcha_data = {"captcha_key": result}
-                if "captcha_sid" in error:
-                    captcha_data["captcha_sid"] = error["captcha_sid"]
+                if captcha_error.captcha_sid is not None:
+                    captcha_data["captcha_sid"] = captcha_error.captcha_sid
+
             return await ctx_api.request(
                 method,
                 data={**data, **captcha_data},

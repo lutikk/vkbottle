@@ -177,7 +177,7 @@ class UserAuth:
             auth_code=auth_code,
             captcha_sid=captcha_sid,
             captcha_key=captcha_key,
-            kwargs=kwargs,
+            **kwargs,
         )
 
         response = await self.http_client.request_json(
@@ -192,10 +192,10 @@ class UserAuth:
         response["error_msg"] = response.pop("error")
         error_msg = response["error_msg"]
         if error_msg == "need_captcha":
-            raise CaptchaError(**response, request_params=[])
+            raise CaptchaError(**response)
         if error_msg == "need_validation":
-            raise APIAuthError(**response, request_params=[])
-        raise AuthError(**response, request_params=[])
+            raise APIAuthError(**response)
+        raise AuthError(**response)
 
     async def validate_phone(
         self,
